@@ -1,0 +1,8 @@
+[package]
+name = "yaks"
+version = "0.1.0"
+authors = ["Florian Gilcher <florian.gilcher@asquera.de>"]
+
+[dependencies]
+clap = "2.9.2"
+glob = "0.2.11"
