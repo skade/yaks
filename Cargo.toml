@@ -3,6 +3,8 @@ name = "yaks"
 version = "1.0.0"
 authors = ["Florian Gilcher <florian.gilcher@asquera.de>"]
 
+license = "GPL3"
+
 [dependencies]
 clap = "2.9.2"
 glob = "0.2.11"
