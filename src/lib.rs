@@ -32,25 +32,65 @@ pub fn list() -> Vec<Yak> {
     .collect()
 }
 
-pub fn edit(name: &str) -> () {
-    let yak = list().into_iter().find(|y| y.name == name).unwrap();
-    println!("{:?}", yak);
+pub fn edit(name: &str) {
+    let yak = if let Some(y) = list().into_iter().find(|y| y.name == name) {
+        y
+    } else {
+        let path = format!("_sources/{}.md", name).into();
+        Yak { title: None, name: name.into(), path: path }
+    };
 
     Command::new("vim")
             .arg(&yak.path)
             .status()
-            .expect("failed to execute process");
+            .expect("failed to execute editor");
+
+    build();
+
+    Command::new("git")
+            .arg("add")
+            .arg(".")
+            .status()
+            .expect("failed to execute git");
+
+    Command::new("git")
+            .arg("commit")
+            .status()
+            .expect("failed to execute git");
+}
+
+pub fn remove(name: &str) {
+    let yak = list().into_iter().find(|y| y.name == name).expect("couldn't find yak");
+
+    Command::new("git")
+            .arg("rm")
+            .arg(&yak.path)
+            .status()
+            .expect("failed to execute git");
+
+    Command::new("git")
+            .arg("rm")
+            .arg("-rf")
+            .arg(&yak.name)
+            .status()
+            .expect("failed to execute git");
+}
+
+pub fn build() {
+    Command::new("./build.sh")
+            .status()
+            .expect("failed to execute build process");
+}
+
+pub fn publish() {
+    Command::new("git")
+            .arg("push")
+            .status()
+            .expect("failed to execute git");
 }
 
 fn title<T: AsRef<Path>>(p: T) -> Option<String> {
     let f = File::open(p.as_ref()).unwrap();
     let reader = BufReader::new(&f);
     reader.lines().nth(0).unwrap().ok()
-}
-
-#[cfg(test)]
-mod tests {
-    #[test]
-    fn it_works() {
-    }
 }
