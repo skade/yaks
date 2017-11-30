@@ -5,7 +5,7 @@
 ## Installation
 
 ```sh
-$ cargo install https://github.com/skade/yaks
+$ cargo install --git https://github.com/skade/yaks
 ```
 
 ## Usage
